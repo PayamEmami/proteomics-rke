@@ -1,0 +1,32 @@
+proxy:
+  secretToken: "ab3f44150e898b83768e46ea65d5d200fceecadd9c1e9372677703a42d85d75f"
+  service:
+    type: ClusterIP
+  https:
+    enabled: false
+ingress:
+  enabled: true
+  hosts:
+    - HOSTINFO
+
+auth:
+  type: github
+  github:
+    clientId: "GITHUB client secret"
+    clientSecret: "client secret"
+    callbackUrl: "HOSTINFO/hub/oauth_callback"
+  admin:
+    access: true
+    users:
+      - Users
+#nbisweden nbisweden/mtbx-notebook
+singleuser:
+  uid: 1000
+  image:
+    name: payamemami/datasci-gui-minimal
+    tag: v1
+    pullPolicy: Always
+  profileList:
+    - display_name: "Minimal environment"
+      kubespawner_override:
+        service_account: default
