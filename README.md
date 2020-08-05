@@ -4,6 +4,7 @@ Follow these steps to set up the cluster:
 1. [Set up RKE](#RKE-deployment-on-Openstack-using-Terraform)
 2. [Set up NFS](#NFS-deployment-on-RKE)
 3. [Set up jupyter](#Jupyter-deployment-on-RKE)
+4. [Running workflows](#Running-workflows)
 # RKE deployment on Openstack using Terraform
 
 This CLI allows you to install a Rancher Kubernetes Engine cluster of machines created with Terraform on Openstack. It provides automatic provisioning of `Cinder volumes` to Kubernetes pods and `nginx` as LoadBalancer.
@@ -185,9 +186,13 @@ You can then visit the dashboard in the following address:
 # NFS deployment on RKE
 ```
 kubectl create ns nfs-provisioner
-kubectl apply -f nfs.yaml
-  --namespace jhub
-kubectl create ns nfs-provisioner
+helm repo add helm-stable https://kubernetes-charts.storage.googleapis.com
+helm install -f nfs/nfs.yaml helm-stable/nfs-server-provisioner --namespace nfs-provisioner --generate-name --version 0.3.0
+
+# this will turn cinder storage class to false
+kubectl patch storageclass cinder -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+
+
 ```
 # Jupyter deployment on RKE
 ```
@@ -197,8 +202,17 @@ helm upgrade --install jhub jupyterhub \
   --namespace jhub  \
   --values config.yaml
 ```
-If there is a problem with premissions:
+If there is a problem with permissions:
 ```
 cd jupyter-rstudio
 kubectl apply -f role.yaml --namespace jhub
 ```
+# Running workflows
+You can log in to the JupyterHub using jp.HOSTINFO.nip.io. Create a terminal and clone the workflows:
+```
+git clone https://github.com/veitveit/IS_Benchmarking.git
+```
+For running Nextflow workflows you can follow this:
+https://www.nextflow.io/docs/latest/kubernetes.html
+
+The volume claim should be `claim-USERNAME` and the mount path is `/home/jovyan`
