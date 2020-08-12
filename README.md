@@ -198,9 +198,9 @@ kubectl patch storageclass cinder -p '{"metadata": {"annotations":{"storageclass
 ```
 cd jupyter-rstudio
 kubectl create ns jhub
-helm upgrade --install jhub jupyterhub \
-  --namespace jhub  \
-  --values config.yaml
+helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
+helm repo update
+helm upgrade --install jhub jupyterhub/jupyterhub   --namespace jhub    --values config.yaml
 ```
 If there is a problem with permissions:
 ```
@@ -216,3 +216,5 @@ For running Nextflow workflows you can follow this:
 https://www.nextflow.io/docs/latest/kubernetes.html
 
 The volume claim should be `claim-USERNAME` and the mount path is `/home/jovyan`
+
+If you are interested in running R parallel on k8s please visit https://github.com/PayamEmami/r-kubernetes
