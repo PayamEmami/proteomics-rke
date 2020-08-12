@@ -22,8 +22,10 @@ auth:
 #nbisweden nbisweden/mtbx-notebook
 singleuser:
   uid: 1000
+  storage:
+    capacity: 2Gi
   image:
-    name: payamemami/datasci-gui-minimal
+    name: payamemami/jupyter-rstudio
     tag: v1
     pullPolicy: Always
   profileList:
